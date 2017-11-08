@@ -1,0 +1,6 @@
+framework module MPKit {
+  umbrella header "MPKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

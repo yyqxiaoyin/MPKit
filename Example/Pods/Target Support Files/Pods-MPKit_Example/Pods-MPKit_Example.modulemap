@@ -1,0 +1,6 @@
+framework module Pods_MPKit_Example {
+  umbrella header "Pods-MPKit_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
