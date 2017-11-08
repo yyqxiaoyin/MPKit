@@ -16,17 +16,20 @@
 #endif /* MPKitMacro_h */
 
 //屏幕高度
-#define Screen_Height      [[UIScreen mainScreen] bounds].size.height
+#define Screen_Height               [[UIScreen mainScreen] bounds].size.height
 //屏幕宽度
-#define Screen_Width       [[UIScreen mainScreen] bounds].size.width
+#define Screen_Width                [[UIScreen mainScreen] bounds].size.width
 
 //适配不同屏幕尺寸
-#define kScreenWidthRatio  (Screen_Width / 375.0)
-#define kScreenHeightRatio (Screen_Height / 667.0)
-#define AdaptedWidth(x)  ceilf((x) * kScreenWidthRatio)
-#define AdaptedHeight(x) ceilf((x) * kScreenHeightRatio)
-#define kFontSize(R)     [UIFont systemFontOfSize:AdaptedWidth(R)]
-#define kBlodFontSize(R) [UIFont boldSystemFontOfSize:AdaptedWidth(R)]
+#define kScreenWidthRatio           (Screen_Width / 375.0)
+//iphoneX的宽度与6s相等，所以iphoneX 的高度适配比例使用6s的比例
+#define kScreenHeightRatio          (Screen_Width==375 ? 1:(Screen_Height / 667.0))
+#define AdaptedWidth(x)             ceilf((x) * kScreenWidthRatio)
+
+#define AdaptedHeight(x)            ceilf((x) * kScreenHeightRatio)
+
+#define kFontSize(R)                [UIFont systemFontOfSize:AdaptedWidth(R)]
+#define kBlodFontSize(R)            [UIFont boldSystemFontOfSize:AdaptedWidth(R)]
 #define SINGLE_LINE_WIDTH           (1 / [UIScreen mainScreen].scale)
 #define SINGLE_LINE_ADJUST_OFFSET   ((1 / [UIScreen mainScreen].scale) / 2)
 
