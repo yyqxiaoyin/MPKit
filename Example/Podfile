@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MPKit_Example' do
+  pod 'MPKit', :path => '../'
+
+  target 'MPKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
