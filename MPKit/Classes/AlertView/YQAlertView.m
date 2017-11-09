@@ -66,14 +66,19 @@
 }
 
 + (instancetype)alertViewWithTitle:(NSString *)title message:(NSString *)message{
-    
+    if (!title) {
+        title = @"";
+    }
+    if (!message) {
+        message = @"";
+    }
     NSAttributedString *attTitle = [[NSAttributedString alloc]initWithString:title attributes:@{NSForegroundColorAttributeName : UIColorFromHex(0x282828),NSFontAttributeName :kFontSize(17)}];
     NSAttributedString *attMessage = [[NSAttributedString alloc]initWithString:message attributes:@{NSForegroundColorAttributeName : UIColorFromHex(0x282828),NSFontAttributeName :kFontSize(15)}];
     
-    return [self alertViewWithAttributedTitle:attTitle attributedmessage:attMessage];
+    return [self alertViewWithAttributedTitle:attTitle attributedMessage:attMessage];
 }
 
-+ (instancetype)alertViewWithAttributedTitle:(NSAttributedString *)attributedTitle attributedmessage:(NSAttributedString *)attributedMessage{
++ (instancetype)alertViewWithAttributedTitle:(NSAttributedString *)attributedTitle attributedMessage:(NSAttributedString *)attributedMessage{
     YQAlertView *backgroundView = [[YQAlertView alloc]init];
     backgroundView.alertTitleLabel.attributedText = attributedTitle;
     backgroundView.messageLabel.attributedText = attributedMessage;
@@ -81,12 +86,18 @@
 }
 
 + (instancetype)alertviewwithAttributedTitle:(NSAttributedString *)attributedTitle messgae:(NSString *)message{
-    return [self alertViewWithAttributedTitle:attributedTitle attributedmessage:[[NSAttributedString alloc]initWithString:message attributes:@{NSFontAttributeName : kFontSize(15)}]];
+    if (!message) {
+        message = @"";
+    }
+    return [self alertViewWithAttributedTitle:attributedTitle attributedMessage:[[NSAttributedString alloc]initWithString:message attributes:@{NSFontAttributeName : kFontSize(15)}]];
 }
 
-+ (instancetype)alertViewWithTitle:(NSString *)title attributedmessage:(NSAttributedString *)attributedMessage{
++ (instancetype)alertViewWithTitle:(NSString *)title attributedMessage:(NSAttributedString *)attributedMessage{
+    if (!title) {
+        title = @"";
+    }
     return [self alertViewWithAttributedTitle:
-            [[NSAttributedString alloc]initWithString:title attributes:@{NSFontAttributeName : kFontSize(17),NSForegroundColorAttributeName : UIColorFromHex(0x282828)}] attributedmessage:attributedMessage];
+            [[NSAttributedString alloc]initWithString:title attributes:@{NSFontAttributeName : kFontSize(17),NSForegroundColorAttributeName : UIColorFromHex(0x282828)}] attributedMessage:attributedMessage];
 }
 
 - (void)addAction:(YQAlertAction *)action{
@@ -124,8 +135,8 @@
     [_alertView.layer addAnimation:animation forKey:@"YQAlertViewAnimation"];
     
 }
-- (void)hide{
-    
+
+- (void)hideWithCompletion:(dispatch_block_t)completion{
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished) {
@@ -136,8 +147,29 @@
         }
         [_alertView removeFromSuperview];
         [self removeFromSuperview];
+        if (completion) {
+            completion();
+        }
     }];
+}
+
+- (void)hide{
     
+    [self hideWithCompletion:nil];
+}
+
++ (void)hide{
+    [self hideWithCompletion:nil];
+}
+
++ (void)hideWithCompletion:(dispatch_block_t)completion{
+    UIWindow *keyWindow = [[UIApplication sharedApplication].windows firstObject];
+    NSArray *subviews = keyWindow.subviews;
+    for (UIView *view in subviews) {
+        if ([view isKindOfClass:self]) {
+            [(YQAlertView *)view hideWithCompletion:completion];
+        }
+    }
 }
 
 #pragma mark - 监听键盘通知
@@ -683,10 +715,18 @@
 
 + (instancetype)actionWithTitle:(NSString *)title
                         handler:(AlertActionNormalHandler)handler{
+    if (!title) {
+        title = @"";
+    }
+    UIColor *color = UIColorFromHex(666666);
+    YQAlertView *alertView = [YQAlertView appearance];
+    if (alertView.lastButtonActionColor) {
+        color = alertView.lastButtonActionColor;
+    }
     
     NSDictionary *attributes = @{
                                  NSFontAttributeName : kFontSize(17),
-                                 NSForegroundColorAttributeName : UIColorFromHex(666666),
+                                 NSForegroundColorAttributeName : color,
                                  };
     NSAttributedString *attString = [[NSAttributedString alloc]initWithString:title attributes:attributes];
     return [self actionWithAttributedTitle:attString handler:handler];
@@ -702,6 +742,9 @@
 }
 
 + (instancetype)actionWithTitle:(NSString *)title titleColor:(UIColor *)titleColor handler:(AlertActionNormalHandler)handler{
+    if (!title) {
+        title = @"";
+    }
     NSAttributedString *attTitle = [[NSAttributedString alloc]initWithString:title attributes:@{NSForegroundColorAttributeName : titleColor,NSFontAttributeName : kFontSize(17)}];
     return [self actionWithAttributedTitle:attTitle handler:handler];
 }
@@ -832,7 +875,7 @@
 
 - (void)setTitleColor:(UIColor *)titleColor{
     _titleColor = titleColor;
-    if (self.button) {
+    if (self.button && self.button.currentAttributedTitle.length) {
         NSMutableAttributedString *attString = [[NSMutableAttributedString alloc]initWithAttributedString:self.button.currentAttributedTitle];
         [attString addAttribute:NSForegroundColorAttributeName value:titleColor range:NSMakeRange(0, self.button.currentAttributedTitle.length)];
         [self.button setAttributedTitle:attString forState:UIControlStateNormal];

@@ -29,7 +29,7 @@
  @param attributedMessage   带属性信息
  @return                    返回一个警告框对象
  */
-+ (instancetype)alertViewWithAttributedTitle:(NSAttributedString *)attributedTitle attributedmessage:(NSAttributedString *)attributedMessage;
++ (instancetype)alertViewWithAttributedTitle:(NSAttributedString *)attributedTitle attributedMessage:(NSAttributedString *)attributedMessage;
 
 /**
  初始化一个 NSString标题  NSAttributedString信息 的alertView
@@ -38,7 +38,7 @@
  @param attributedMessage             信息
  @return                    返回一个警告框对象
  */
-+ (instancetype)alertViewWithTitle:(NSString *)title attributedmessage:(NSAttributedString *)attributedMessage;
++ (instancetype)alertViewWithTitle:(NSString *)title attributedMessage:(NSAttributedString *)attributedMessage;
 
 /**
  初始化一个 NSAttributedString标题  NSString信息 的alertView
@@ -61,11 +61,23 @@
 /** 信息属性文字 */
 @property (nonatomic ,strong) NSAttributedString *attributedMessage;
 
+/** 当前所有action数组 */
+@property (nonatomic ,strong ,readonly) NSMutableArray *actions;
+
+/** 最后一个按钮的默认颜色 */
+@property (nonatomic ,strong) UIColor *lastButtonActionColor UI_APPEARANCE_SELECTOR;
+
 - (void)addAction:(YQAlertAction *)action;
 
 - (void)show;
 
 - (void)hide;
+
+- (void)hideWithCompletion:(dispatch_block_t)completion;
+
++ (void)hide;
+
++ (void)hideWithCompletion:(dispatch_block_t)completion;
 
 @end
 

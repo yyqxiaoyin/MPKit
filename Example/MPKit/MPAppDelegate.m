@@ -7,12 +7,13 @@
 //
 
 #import "MPAppDelegate.h"
+#import "MPKit.h"
 
 @implementation MPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    [YQAlertView appearance].lastButtonActionColor = [UIColor colorWithHexColorString:@"dc4ad2"];
     return YES;
 }
 
