@@ -27,6 +27,9 @@
     YQAlertAction *action1 = [YQAlertAction actionWithTitle:@"好的" handler:^(YQAlertAction *action) {
         
     }];
+    YQAlertAction *action2 = [YQAlertAction actionWithTitle:@"好的1" handler:^(YQAlertAction *action) {
+        
+    }];
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setTitle:@"自定义" forState:UIControlStateNormal];
     btn.frame = CGRectMake(0, 0, 100, 40);
@@ -34,6 +37,7 @@
     [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     YQAlertAction *custom = [YQAlertAction actionWithCustumView:btn];
     [alertView addAction:action1];
+    [alertView addAction:action2];
     [alertView addAction:custom];
     [alertView show];
     

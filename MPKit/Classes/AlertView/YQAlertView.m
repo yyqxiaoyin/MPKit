@@ -40,6 +40,9 @@
 /** action对应字典  eg: @"action0":action */
 @property (nonatomic ,strong) NSMutableDictionary *actionsDic;
 
+/** AlertActionTypeNormal 类型的action */
+@property (nonatomic ,strong) NSMutableArray *normalActions;
+
 @property (nonatomic, assign) BOOL isCustom;
 
 @end
@@ -104,6 +107,8 @@
     
     if (action.alertActionType == AlertActionTypeCustom) {
         self.isCustom = YES;
+    }else if (action.alertActionType == AlertActionTypeNormal){
+        [self.normalActions addObject:action];
     }
     
     [self.alertView addSubview:action];
@@ -120,8 +125,8 @@
 
 - (void)show{
     
+    [self setAppearanceStyle];
     [self addViewsConstraints];
-    
     [UIView animateWithDuration:0.3 animations:^{
         self.alpha = 1;
     }];
@@ -133,6 +138,17 @@
     [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1.0)]];
     animation.values = values;
     [_alertView.layer addAnimation:animation forKey:@"YQAlertViewAnimation"];
+    
+}
+
+- (void)setAppearanceStyle{
+    UIColor *color = [YQAlertView appearance].lastButtonActionColor;
+    if (color) {
+        if (self.normalActions.count) {
+            YQAlertAction *lastAction = [self.normalActions lastObject];
+            lastAction.titleColor = color;
+        }
+    }
     
 }
 
@@ -618,6 +634,13 @@
     return _actionsDic;
 }
 
+- (NSMutableArray *)normalActions{
+    if (!_normalActions) {
+        _normalActions = [NSMutableArray array];
+    }
+    return _normalActions;
+}
+
 //- (UIView *)horizontalLine{
 //    if (!_horizontalLine) {
 //        _horizontalLine = [UIView new];
@@ -719,10 +742,10 @@
         title = @"";
     }
     UIColor *color = UIColorFromHex(666666);
-    YQAlertView *alertView = [YQAlertView appearance];
-    if (alertView.lastButtonActionColor) {
-        color = alertView.lastButtonActionColor;
-    }
+//    YQAlertView *alertView = [YQAlertView appearance];
+//    if (alertView.lastButtonActionColor) {
+//        color = alertView.lastButtonActionColor;
+//    }
     
     NSDictionary *attributes = @{
                                  NSFontAttributeName : kFontSize(17),
